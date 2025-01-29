@@ -1,0 +1,39 @@
+services:
+  tlsrpt-reporter:
+    build:
+      context: .
+    image: localhost/tlsrpt-reporter
+
+  tlsrpt-collectd:
+    environment:
+      MODE: collectd
+    hostname: tlsrpt-collectd
+    image: localhost/tlsrpt-reporter
+    restart: always
+    volumes:
+    - tlsrpt-data:/tlsrpt-data:rw
+    - tlsrpt-socket:/tlsrpt-socket:rw
+
+  tlsrpt-reportd:
+    environment:
+      MODE: reportd
+      SSMTP_MAILHUB: mailhub.example:25
+      TLSRPT_REPORTD_CONTACT_INFO: tlsrpt@example.org
+      TLSRPT_REPORTD_ORGANIZATION_NAME: example.org
+      TLSRPT_REPORTD_SENDER_ADDRESS: tlsrpt-reportd@example.org
+    hostname: tlsrpt-reportd
+    image: localhost/tlsrpt-reporter
+    restart: always
+    volumes:
+    - tlsrpt-data:/tlsrpt-data:rw
+
+# postfix:
+#   image: localhost/postfix
+#   volumes:
+#   - tlsrpt-socket:/var/spool/postfix/tlsrpt:rw
+#
+# postconf -e 'smtp_tlsrpt_socket_name = tlsrpt/collectd.socket'
+
+volumes:
+  tlsrpt-data:
+  tlsrpt-socket:
