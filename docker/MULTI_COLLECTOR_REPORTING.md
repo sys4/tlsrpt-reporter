@@ -2,7 +2,7 @@
 
 A larger organization may want to collect TLSRPT data on many MTA hosts and
 collect these data on one central reporting instance. This document describes
-the setup.
+the setup using docker containers.
 
 ```text
       MTA 1                    MTA 2               ...              MTA n
@@ -125,5 +125,21 @@ The file `/etc/issue` should now exist inside the container:
 ```
 
 On production system, adjust `alias /tmp` to a volume, writable by nginx and
-the value of `$ROLLOVER_UPLOAD_URI?`. Finally create the nessesary directories
-used in `$ROLLOVER_UPLOAD_SUBDIR`.
+the value of `$ROLLOVER_UPLOAD_URI`. Finally create the nessesary directories
+used in `$ROLLOVER_UPLOAD_SUBDIR`. We suggest a docker volume `tlsrpt-data`
+mounted at `/tlsrpt-data`
+
+## glue to tlsrpt-reportd
+
+The volume used and writable by `nginx` must also be accessible (with write
+access) to a container running `tlsrpt-collectd`. To be used by
+`tlsrpt-collectd`, adjust `$TLSRPT_REPORTD_FETCHERS`:
+
+```txt
+TLSRPT_REPORTD_FETCHERS = tlsrpt-fetcher --storage sqlite:///tlsrpt-data/upload/tlsrpt-collectd1.example/collectd.sqlite'
+```
+
+Repeat the command for any tlsrpt-collectd instance, separated by colons.
+Important: even if `daily_rollover_script` upload files named
+`collectd.sqlite.yesterday`, `tlsrpt-fetcher` MUST be configured for names
+ending without `.yesterday`
