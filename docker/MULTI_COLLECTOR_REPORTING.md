@@ -5,23 +5,23 @@ collect these data on a centralized reporting instance.
 This document describes the setup.
 
 ```text
-       MTA 1                    MTA 2            ...           MTA n
+      MTA 1                    MTA 2               ...              MTA n
 
-         |                        |                              |
-         v                        v                              v
+        |                        |                                    |
+        v                        v                                    v
 
-  tlsrpt-collectd 1        tlsrpt-collectd 2     ...     tlsrpt-collectd 1  
+ tlsrpt-collectd 1        tlsrpt-collectd 2        ...        tlsrpt-collectd n  
 
-         |                        |                              |
-         |                        v                              |
-         |                                                       |
-         ----------->  webserver's upload directory <-------------
+        |                        |                                    |
+        |                        v                                    |
+        |                                                             |
+        ----------->  webserver's upload directory <-------------------
 
-                                  ^
-                                  | read/write
-                                  v
+                                 ^
+                                 |   read/write
+                                 v
 
-                         central tlsrpt-reportd
+                      central tlsrpt-reportd
 ```
 
 Each `tlsrpt-collectd` instance has to transfer it's database to the central
