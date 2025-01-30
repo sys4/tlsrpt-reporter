@@ -118,7 +118,7 @@ Now start the container and upload a file:
 # curl --upload-file /etc/issue http://localhost:8080/upload/uploaded_filename
 ```
 
-The file `/etc/issue` now should exist inside the container:
+The file `/etc/issue` should now exist inside the container:
 
 ```sh
 # docker-compose exec nginx ls -la /tmp/uploaded_filename
