@@ -132,14 +132,15 @@ mounted at `/tlsrpt-data`
 ## glue to tlsrpt-reportd
 
 The volume used and writable by `nginx` must also be accessible (with write
-access) to a container running `tlsrpt-collectd`. To be used by
-`tlsrpt-collectd`, adjust `$TLSRPT_REPORTD_FETCHERS`:
+access) to a container running `tlsrpt-collectd`. To tell `tlsrpt-reportd` to
+use multiple databases, adjust `$TLSRPT_REPORTD_FETCHERS`:
 
 ```txt
-TLSRPT_REPORTD_FETCHERS = tlsrpt-fetcher --storage sqlite:///tlsrpt-data/upload/tlsrpt-collectd1.example/collectd.sqlite'
+TLSRPT_REPORTD_FETCHERS = tlsrpt-fetcher --storage sqlite:///tlsrpt-data/tlsrpt-collectd-1.example/collectd.sqlite'
 ```
 
-Repeat the command for any tlsrpt-collectd instance, separated by colons.
+Repeat the command for any `tlsrpt-collectd` instance, separated by colons.
+
 Important: even if `daily_rollover_script` upload files named
 `collectd.sqlite.yesterday`, `tlsrpt-fetcher` MUST be configured for names
 ending without `.yesterday`
