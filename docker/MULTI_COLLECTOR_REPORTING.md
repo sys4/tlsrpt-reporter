@@ -41,14 +41,14 @@ The Script use the following environment variables:
 
   example: `https://tlsrpt-collecd.example/upload/`
 
-  This variable MUST be provided and contain an URI.
+  This variable MUST be provided and contain an URI
 
 * `ROLLOVER_UPLOAD_SUBDIR`
 
   default: if the optional variable is unset, the output of `hostname -f` is
            used
 
-  The value is appended to `${ROLLOVER_UPLOAD_URI}` to form a upload URL uniq
+  The value is appended to `${ROLLOVER_UPLOAD_URI}` to form a upload URL unique
   to an `tlsrpt-collectd` instance
 
 * `ROLLOVER_CURL_ARGS`
@@ -79,11 +79,13 @@ services:
 ```txt
 # file: /tmp/nginx.conf
 server {
-  listen 8080;
+  listen                 8080;
 
   location /upload {
     alias                /tmp;
-    client_max_body_size 10M;   # adjust to the size of your databases
+
+    # adjust to the size of your databases
+    client_max_body_size 10M;
     dav_access           group:rw all:rw;
     dav_methods          PUT;
 
@@ -94,9 +96,16 @@ server {
     }
 
     # step 2: allow PUT for selected tlsrpt-collectd
-    allow                172.12.0.0/12; # dockers default netword space
-    allow                192.0.2.1;     # IPv4 address of `tlsrpt-collectd 1
-    allow                2001:db0::2;   # IPv6 address of `tlsrpt-collectd 2
+    # docker default network space (only for this example)
+    allow                172.12.0.0/12;
+
+    # IPv4 address of `tlsrpt-collectd 1
+    allow                192.0.2.1;
+
+    # IPv6 address of `tlsrpt-collectd 2
+    allow                2001:db0::2;
+
+    # don't forget!
     deny                 all;
   }
 }
