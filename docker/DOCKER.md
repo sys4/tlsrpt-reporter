@@ -27,6 +27,16 @@ docker-compose up -d tlsrpt-collectd
 The Container uses two volumes. One with the socket and a second one persist
 the database files.
 
+The following environment variables are relevant:
+
+* `TLSRPT_COLLECTD_DAILY_ROLLOVER_SCRIPT`
+
+  default: `<empty>`
+
+  Set a scriptname to transfer the collectd database to an other host running
+  a central `tlsrpt-reportd`-instance. The Container provides `/usr/local/bin/daily_rollover_script`
+  to do the transfer using `curl`. See ... for details.
+
 ## Running the reportd
 
 This mode is active if ENV[MODE] is set to `reportd`.

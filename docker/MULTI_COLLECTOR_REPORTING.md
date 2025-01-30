@@ -4,6 +4,7 @@ Larger organization may want to collect TLSRPT data on many MTA hosts and
 collect these data on a centralized reporting instance.
 This document describes the setup.
 
+```text
        MTA 1                    MTA 2            ...           MTA n
 
          |                        |                              |
@@ -21,6 +22,7 @@ This document describes the setup.
                                   v
 
                          central tlsrpt-reportd
+```
 
 Each `tlsrpt-reportd` instance has to transfer it's database to the central
 `tlsrpt-reportd`.
