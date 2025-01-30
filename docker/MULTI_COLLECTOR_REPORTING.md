@@ -10,7 +10,7 @@ the setup.
         |                        |                                    |
         v                        v                                    v
 
- tlsrpt-collectd 1        tlsrpt-collectd 2        ...        tlsrpt-collectd n  
+ tlsrpt-collectd 1        tlsrpt-collectd 2        ...        tlsrpt-collectd n
 
         |                        |                                    |
         |                        v                                    |
@@ -65,35 +65,56 @@ The Script use the following environment variables:
 
 This section describe a configuration for a `nginx` or `freenginx` webserver.
 
-```text
+```yaml
+# file: /tmp/docker-compose.yml
+services:
+  nginx:
+    image: nginx
+    ports:
+    - 8080:8080
+    volumes:
+    - ./nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+```
+
+```txt
+# file: /tmp/nginx.conf
 server {
-  listen            ...
-  server_name       ...
-  tls configuration ...
+  listen 8080;
 
   location /upload {
-    root
-    client_body_temp_path	/upload/.client_body_temp_path;
-    client_max_body_size        10M;   adjust to the size of your databases
-    dav_access                  group:rw all:rw;
-    dav_methods                 PUT;
+    alias                /tmp;
+    client_max_body_size 10M;   # adjust to the size of your databases
+    dav_access           group:rw all:rw;
+    dav_methods          PUT;
 
     # poor man's access control
     # step 1: all requests exept PUT are denied
     limit_except PUT {
-      deny all;
+      deny               all;
     }
 
     # step 2: allow PUT for selected tlsrpt-collectd
-    allow 192.0.2.1;    # IPv4 address of `tlsrpt-collectd 1
-    allow 2001:db0::2;  # IPv6 address of `tlsrpt-collectd 2
-    deny  all;
+    allow                172.12.0.0/12; # dockers default netword space
+    allow                192.0.2.1;     # IPv4 address of `tlsrpt-collectd 1
+    allow                2001:db0::2;   # IPv6 address of `tlsrpt-collectd 2
+    deny                 all;
   }
-
-  location /upload/.client_body_temp_path {
-    deny  all;
-  }
-
-  # other settings
 }
 ```
+
+Now start the container and upload a file:
+
+```sh
+# docker-compose up -d
+# curl --upload-file /etc/issue http://localhost:8080/upload/uploaded_filename
+```
+
+The file `/etc/issue` now should exist inside the container:
+
+```sh
+# docker-compose exec nginx ls -la /tmp/uploaded_filename
+```
+
+On production system, adjust `alias /tmp` to a volume, writable by nginx and
+the value of `$ROLLOVER_UPLOAD_URI?`. Finally create the nessesary directories
+used in `$ROLLOVER_UPLOAD_SUBDIR`.
