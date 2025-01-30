@@ -24,11 +24,11 @@ This document describes the setup.
                          central tlsrpt-reportd
 ```
 
-Each `tlsrpt-reportd` instance has to transfer it's database to the central
+Each `tlsrpt-collectd` instance has to transfer it's database to the central
 `tlsrpt-reportd`.
 This can be enabled by setting the environment variable
 `TLSRPT_COLLECTD_DAILY_ROLLOVER_SCRIPT` with a path to a script on any
-`tlsrpt-reportd` instance.
+`tlsrpt-collectd` instance.
 
 There is a script `/usr/local/bin/daily_rollover_script` available that
 transfer each database using `curl` to a webserver.
