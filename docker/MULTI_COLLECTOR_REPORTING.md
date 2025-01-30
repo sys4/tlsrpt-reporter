@@ -1,8 +1,8 @@
 # running multiple collector and one central reporter
 
 A larger organization may want to collect TLSRPT data on many MTA hosts and
-collect these data on a centralized reporting instance.
-This document describes the setup.
+collect these data on one central reporting instance. This document describes
+the setup.
 
 ```text
       MTA 1                    MTA 2               ...              MTA n
