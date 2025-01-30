@@ -1,0 +1,27 @@
+#!/bin/sh
+
+if [ -z "$2" ]; then
+ echo "usage: $0 <receiver storage backend> <fetcher storage backend.yesterday>"
+ exit 1
+fi
+
+if [ -z "${ROLLOVER_UPLOAD_URI}" ]; then
+ echo 'FATAL: ENV[ROLLOVER_UPLOAD_URI] required'
+ exit 1
+fi
+
+if [ -z "${ROLLOVER_UPLOAD_SUBDIR}" ]; then
+  ROLLOVER_UPLOAD_SUBDIR="$( hostname -f )"
+fi
+
+_rollover_filename="$( basename "${2}" )"
+_rollover_final_uri="${ROLLOVER_UPLOAD_URI}/${ROLLOVER_UPLOAD_SUBDIR}/${_rollover_filename}"
+
+if [ -z "${ROLLOVER_CURL_ARGS}" ]; then
+  ROLLOVER_CURL_ARGS='--retry 3 --no-keepalive'
+fi
+
+# SC2086 (info): Double quote to prevent globbing and word splitting.
+# but exactly this is wanted here ...
+# shellcheck disable=SC2086
+exec /usr/bin/curl ${ROLLOVER_CURL_ARGS} --upload-file "${2}" "${_rollover_final_uri}"

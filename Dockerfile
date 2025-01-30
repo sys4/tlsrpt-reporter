@@ -27,6 +27,7 @@ COPY --from=build /usr/local/ /usr/local/
 COPY doc/tlsrpt-*.1 /usr/local/share/man/man1/
 COPY docker/cmd /cmd
 COPY docker/entrypoint /entrypoint
+COPY docker/daily_rollover_script /usr/local/bin/
 
 # hadolint ignore=DL3008
 RUN apt-get -y -qq update \
@@ -43,6 +44,7 @@ RUN apt-get -y -qq update \
     #
     && chmod 0555 /cmd \
                   /entrypoint \
+                  /usr/local/bin/daily_rollover_script \
     #
     # create a unpriveleged user
     && useradd --no-create-home \
