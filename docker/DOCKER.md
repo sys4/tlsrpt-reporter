@@ -3,8 +3,8 @@
 ## Build
 
 ```sh
-git glone https://github.com/sys4/tlsrpt.git
-cd tlsrpt/
+git glone https://github.com/sys4/tlsrpt-reporter.git
+cd tlsrpt-reporter/
 docker-compose build
 ```
 
