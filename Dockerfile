@@ -9,6 +9,8 @@ COPY tlsrpt/ ./tlsrpt/
 # hadolint ignore=DL3008,DL4006
 RUN    apt-get -y -qq update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y -qq install --no-install-recommends \
+         asciidoctor \
+         make \
          python3-pip \
     && pip3 install \
          --break-system-packages \
@@ -19,7 +21,10 @@ RUN    apt-get -y -qq update \
          pyproject.toml \
          . \
     # cleanup unneeded files
-    && find /usr/local -type d \( -name 'pyproject_toml*' -o -name '__pycache__' \) -print0 | xargs -0 rm -rf
+    && find /usr/local -type d \( -name 'pyproject_toml*' -o -name '__pycache__' \) -print0 | xargs -0 rm -rf \
+    #
+    # create manpages
+    && make -C doc/
 
 FROM debian:bookworm-slim
 
