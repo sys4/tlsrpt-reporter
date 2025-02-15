@@ -1,21 +1,21 @@
-# TLSRPT in a Container
+# TLSRPT reporting in a Container
 
 ## Build
 
 ```sh
-git glone https://github.com/sys4/tlsrpt-reporter.git
+git clone https://github.com/sys4/tlsrpt-reporter.git
 cd tlsrpt-reporter/
 docker-compose build
 ```
 
 ## Running
 
-The Container may run in different modes selected by ENV[MODE]
-By default, if ENV[MODE] is unset, a shell is executed.
+The container may run in two different modes selected by env[MODE].
+By default, if env[MODE] is unset, a shell is executed.
 
 ## Running the collectd
 
-This mode is active if ENV[MODE] is set to `collectd`.
+This mode is active if env[MODE] is set to `collectd`.
 
 The collectd MUST run near the MTA. Communication between a MTA and `tlsrpt-collectd`
 happen over a unix domain socket created by `tlsrpt-collectd`
@@ -24,8 +24,12 @@ happen over a unix domain socket created by `tlsrpt-collectd`
 docker-compose up -d tlsrpt-collectd
 ```
 
-The Container uses two volumes. One with the socket and a second one persist
-the database files.
+The container uses two volumes. One with the socket exposed to an MTA and a
+second one for persistent storage of database files.
+
+Recommended names to the volumes are `tlsrpt-data` and `tlsrpt-socket`. The
+volumes are mounted writable as `/tlsrpt-data` and `/tlsrpt-socket` inside a
+container.
 
 The following environment variables are relevant:
 
@@ -34,27 +38,44 @@ The following environment variables are relevant:
   default: `<empty>`
 
   Set a scriptname to transfer the collectd database to an other host running
-  a central `tlsrpt-reportd`-instance. The Container provides `/usr/local/bin/daily_rollover_script`
-  to do the transfer using `curl`. See ... for details.
+  a central `tlsrpt-reportd`-instance. The container provides `/usr/local/bin/daily_rollover_script`
+  to do the transfer using `curl`. See [MULTI_COLLECTOR_REPORTING.md](MULTI_COLLECTOR_REPORTING.md)
+  for details.
 
 ## Running the reportd
 
-This mode is active if ENV[MODE] is set to `reportd`.
+This mode is active if env[MODE] is set to `reportd`.
 
 ```sh
 docker-compose up -d tlsrpt-reportd
 ```
 
-The Container uses one volume to persist database files. Also, the following
-environment settings are required:
+The container uses one volume for persistent storage of database files.
+
+Recommended name for the volume is `tlsrpt-data`. The volume is mounted
+writable as `/tlsrpt-data` inside the container.
+
+The same volume `tlsrpt-data` can be shared between one `tlsrpt-collectd` and
+one `tlsrpt-reportd`.
+
+The following environment settings are required:
 
 * `SSMTP_MAILHUB`
+
+  The host to send mail to, in the form _host_ | _IPv4_addr_ _[: port]_.
+  The default port is 25. Support for IPv6 addresses depend on your ssmtp
+  version)
 
 * `TLSRPT_REPORTD_CONTACT_INFO`
 
 * `TLSRPT_REPORTD_ORGANIZATION_NAME`
 
 * `TLSRPT_REPORTD_SENDER_ADDRESS`
+
+## Limitations
+
+The container are designed to run as __one instance__. Running many "collectd"
+or "reportd" container parallel is not supported.
 
 ## Debugging
 
