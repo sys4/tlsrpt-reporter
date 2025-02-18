@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case "${MODE}" in
+  collectd|reportd)
+    cmd="/usr/local/bin/tlsrpt-${MODE}"
+    ;;
+  *)
+    cmd='/bin/bash'
+    ;;
+esac
+
+exec $cmd

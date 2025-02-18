@@ -1,0 +1,64 @@
+#!/bin/sh
+
+if [ "${MODE}" = 'collectd' ]; then
+  if [ -z "${TLSRPT_COLLECTD_SOCKETNAME}" ]; then
+    TLSRPT_COLLECTD_SOCKETNAME='/tlsrpt-socket/collectd.socket'
+    export TLSRPT_COLLECTD_SOCKETNAME
+  fi
+  if [ -z "${TLSRPT_COLLECTD_SOCKETMODE}" ]; then
+    # every uid may write to the socket
+    TLSRPT_COLLECTD_SOCKETMODE='0222'
+    export TLSRPT_COLLECTD_SOCKETMODE
+  fi
+elif [ "${MODE}" = 'reportd' ]; then
+
+  if [ -z "${TLSRPT_REPORTD_CONTACT_INFO}" ]; then
+    echo 'FATAL: ENV[TLSRPT_REPORTD_CONTACT_INFO] is required'
+    exit 1
+  fi
+  echo "INFO: TLSRPT_REPORTD_CONTACT_INFO=${TLSRPT_REPORTD_CONTACT_INFO}"
+
+  if [ -z "${TLSRPT_REPORTD_ORGANIZATION_NAME}" ]; then
+    echo 'FATAL: ENV[TLSRPT_REPORTD_ORGANIZATION_NAME] is required'
+    exit 1
+  fi
+  echo "INFO: TLSRPT_REPORTD_ORGANIZATION_NAME=${TLSRPT_REPORTD_ORGANIZATION_NAME}"
+
+  if [ -z "${TLSRPT_REPORTD_SENDER_ADDRESS}" ]; then
+    echo 'FATAL: ENV[TLSRPT_REPORTD_SENDER_ADDRESS] is required'
+    exit 1
+  fi
+  echo "INFO: TLSRPT_REPORTD_SENDER_ADDRESS=${TLSRPT_REPORTD_SENDER_ADDRESS}"
+
+  if [ -z "${SSMTP_MAILHUB}" ]; then
+    echo 'FATAL: ENV[SSMTP_MAILHUB] is required'
+    exit 1
+  fi
+  echo "INFO: SSMTP_MAILHUB=${SSMTP_MAILHUB}"
+  echo "mailhub=${SSMTP_MAILHUB}" > /tmp/ssmtp.conf
+  # TODO: should there be more checks if ENV[SSMTP_MAILHUB] match "host[:port]"
+
+  # TODO: TLSRPT_REPORTD_SENDER_ADDRESS may contain a display name
+  # TODO: that MUST be stripped here. This implementation may not be perfect
+  # TODO: and should be reviewed
+  _sender="$( echo "${TLSRPT_REPORTD_SENDER_ADDRESS}" | sed -e 's/^.*<//' -e 's/>.*$//' 2>/dev/null )"
+  if [ -z "${_sender}" ]; then
+    echo 'FATAL: failed to extract bare "user@domain" from ENV[TLSRPT_REPORTD_SENDER_ADDRESS]'
+    exit 1
+  fi
+  # TODO: more Checks
+  echo "tlsrpt:${_sender}:${SSMTP_MAILHUB}" > /tmp/revaliases
+  unset _sender
+
+  if [ -n "${SSMTP_DEBUG}" ]; then
+    echo 'debug=yes' >> /tmp/ssmtp.conf
+  fi
+  if [ -n "${SSMTP_USETLS}" ]; then
+    echo 'usetls=yes' >> /tmp/ssmtp.conf
+  fi
+  if [ -n "${SSMTP_USESTARTTLS}" ]; then
+    echo 'usestarttls=yes' >> /tmp/ssmtp.conf
+  fi
+fi
+
+exec "$@"
