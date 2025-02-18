@@ -5,6 +5,7 @@ WORKDIR /tmp
 COPY README.md ./
 COPY pyproject.toml ./
 COPY tlsrpt/ ./tlsrpt/
+COPY doc/ ./doc/
 
 # hadolint ignore=DL3008,DL4006
 RUN    apt-get -y -qq update \
@@ -24,12 +25,13 @@ RUN    apt-get -y -qq update \
     && find /usr/local -type d \( -name 'pyproject_toml*' -o -name '__pycache__' \) -print0 | xargs -0 rm -rf \
     #
     # create manpages
-    && make -C doc/
+    && make -C doc/ \
+    && install -d /usr/local/share/man/man1/ \
+    && install --mode 0444 doc/tlsrpt-*.1 /usr/local/share/man/man1/
 
 FROM debian:bookworm-slim
 
 COPY --from=build /usr/local/ /usr/local/
-COPY doc/tlsrpt-*.1 /usr/local/share/man/man1/
 COPY docker/cmd /cmd
 COPY docker/entrypoint /entrypoint
 COPY docker/daily_rollover_script /usr/local/bin/
