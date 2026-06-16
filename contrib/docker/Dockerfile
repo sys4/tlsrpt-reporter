@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS build
+FROM debian:trixie-slim AS build
 
 WORKDIR /tmp
 
@@ -27,9 +27,9 @@ RUN    apt-get -y -qq update \
     # create manpages
     && make -C doc/ \
     && install -d /usr/local/share/man/man1/ \
-    && install --mode 0444 doc/tlsrpt-*.1 /usr/local/share/man/man1/
+    && install --mode 0444 doc/tlsrpt*.1 /usr/local/share/man/man1/
 
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 COPY --from=build /usr/local/ /usr/local/
 COPY contrib/docker/cmd /cmd
