@@ -30,8 +30,7 @@ mail service architectures.
 
 The following distributions provide packages for the TLSRPT reporting service:
 
-At the moment no distribution provides a package.
-
+[![Packaging status](https://repology.org/badge/vertical-allrepos/tlsrpt-reporter.svg)](https://repology.org/project/tlsrpt-reporter/versions)
 
 ## Development
 
