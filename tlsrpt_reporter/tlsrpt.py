@@ -1571,9 +1571,9 @@ class TLSRPTReportd(VersionedSQLite):
             dt = self.wakeuptime - tlsrpt_utc_time_now()
             seconds_to_sleep = dt.total_seconds()
             if seconds_to_sleep >= 0:
-                logger.info("Sleeping for %d seconds", seconds_to_sleep)
+                logger.debug("Sleeping for %d seconds", seconds_to_sleep)
             else:
-                logger.info("Skipping sleeping for negative %d seconds", seconds_to_sleep)
+                logger.debug("Skipping sleeping for negative %d seconds", seconds_to_sleep)
             for key, _ in sel.select(timeout=seconds_to_sleep):
                 if key.fileobj == interrupt_read:
                     signumb = interrupt_read.recv(1)
