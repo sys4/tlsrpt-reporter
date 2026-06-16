@@ -186,4 +186,6 @@ class Duration:
         self.count += n
 
     def rate(self):
+        if self.count == 0:
+            return 0
         return self.count / self.time().total_seconds()
