@@ -176,6 +176,7 @@ class Duration:
 
     def start(self):
         self.begin = datetime.datetime.now(datetime.timezone.utc)
+        self.begin -= datetime.timedelta(microseconds=1)  # prevent div/0 exception
 
     def time(self):
         n = datetime.datetime.now(datetime.timezone.utc)
@@ -186,6 +187,4 @@ class Duration:
         self.count += n
 
     def rate(self):
-        if self.count == 0:
-            return 0
         return self.count / self.time().total_seconds()
