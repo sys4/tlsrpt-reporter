@@ -1,5 +1,5 @@
 #
-#    Copyright (C) 2024-2025 sys4 AG
+#    Copyright (C) 2024-2026 sys4 AG
 #    Author Boris Lohner bl@sys4.de
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -173,7 +173,6 @@ class Duration:
     def __init__(self):
         self.start()
         self.count = 0
-        self.begin = None
 
     def start(self):
         self.begin = datetime.datetime.now(datetime.timezone.utc)

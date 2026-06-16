@@ -34,6 +34,15 @@ class MyTestCase(unittest.TestCase):
             domain = utility.extract_domain_from_email_address('example.com')
         self.assertEqual(cm.exception.__str__(), "Could not extract domain part from example.com")
 
+    def test_duration(self):
+        # New Duration object without events yet must return zero rate
+        duration = utility.Duration()
+        rate = duration.rate()
+        self.assertEqual(rate, 0)
+        # Now add an event and the rate must be positive
+        duration.add()
+        rate = duration.rate()
+        self.assertGreater(rate, 0)
 
 if __name__ == '__main__':
     unittest.main()
