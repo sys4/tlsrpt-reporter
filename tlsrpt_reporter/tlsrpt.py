@@ -1067,7 +1067,7 @@ class TLSRPTReportd(VersionedSQLite):
                            reportd_time, self.cfg.max_collectd_timediff, fetcherindex, fetcher)
         # Protocol line 3: available day
         available_day = fetcherpipe.stdout.readline().decode('utf-8').rstrip()
-        if available_day != day:
+        if available_day < day:
             logger.warning("Fetcher not ready %d %s: expected %s but got %s", fetcherindex, fetcher, day,
                            available_day)
             return False
