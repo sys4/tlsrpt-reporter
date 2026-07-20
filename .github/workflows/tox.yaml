@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - fix-tox
   pull_request:
     branches:
       - main
+      - fix-tox
 
 jobs:
   run-tox:
