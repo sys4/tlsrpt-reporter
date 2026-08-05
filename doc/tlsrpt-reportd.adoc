@@ -70,6 +70,7 @@ Keep old data for _n_ days before deleting from the database.
 
 *--spread_out_delivery*=_sec_::
 Spread out the delivery of TLSRPT reports over _sec_ seconds.
+The minimum value is 1 and causes all reports to be sent out immediately.
 This setting should be set to several hours according to RFC8460, section 4.1.
 For example, set spread_out_delivery to 14400 to spread out the delivery of the reports over four hours.
 

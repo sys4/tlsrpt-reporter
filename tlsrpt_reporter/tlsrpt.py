@@ -835,6 +835,34 @@ class TLSRPTReportd(VersionedSQLite):
         for (n, fetcher) in enumerate(self.get_fetchers(), start=1):
             logger.debug("CHECK FETCHER %s: %s", n, fetcher)
             self._config_check_fetcher(n, fetcher)
+        self._config_check_min_val("spread_out_delivery", 1)
+        self._config_check_min_val("min_wait_delivery", 0)
+        self._config_check_min_val("min_wait_domainlist", 0)
+        self._config_check_min_val("min_wait_domaindetails", 0)
+        self._config_check_min_max_pair("min_wait_delivery", "max_wait_delivery")
+        self._config_check_min_max_pair("min_wait_domainlist", "max_wait_domainlist")
+        self._config_check_min_max_pair("min_wait_domaindetails", "max_wait_domaindetails")
+
+    def _config_check_min_val(self, par, minval):
+        """
+        Check for a configuration parameter to have at least the minimum value
+        :param par: name of the configuration parameter to be checked against minval
+        :param minval: minimum allowed value for configuration parameter par
+        """
+        val = getattr(self.cfg, par)
+        if val < minval:
+            raise TLSRPTReportdSetupException(f"{par} value '{val}' must be at least '{minval}'")
+
+    def _config_check_min_max_pair(self, minpar, maxpar):
+        """
+        Check for min/max configuration parameter pairs to have the max value be at least the min value
+        :param minpar: name of the configuration parameter defining the minimum value
+        :param maxpar: name of the configuration parameter defining the maximum value
+        """
+        maxval = getattr(self.cfg, maxpar)
+        minval = getattr(self.cfg, minpar)
+        if maxval < minval:
+            raise TLSRPTReportdSetupException(f"{maxpar} value '{maxval}' must be at least {minpar} value '{minval}'")
 
     def _config_check_colliding_options(self):
         """
