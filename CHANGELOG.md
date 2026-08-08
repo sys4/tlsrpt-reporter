@@ -3,6 +3,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0rc2] - 2026-08-08
+
+### Fixed
+- Issue #64: Check tlsrpt-reportd parameters for valid minimum values
+- Issue #63: Fix tox action running inside the GitHub actions framework
+- Issue #62: Allow old fetcher jobs to succeed when something was stuck over a daily rollover
+- Issue #60: Added missing python module tlsrpt_reporter.tlsrptctl
+- Issue #59: Add tlsrptctl tool to installed project scripts
+- Issue #58: Duration constructor did reset start to None after it was initialized to the current time
+
+### Changed
+- Reduce loglevel for sleep cycle messages in loop
+
+
 ## [0.6.0rc1] - 2026-05-22
 
 ### Fixed
