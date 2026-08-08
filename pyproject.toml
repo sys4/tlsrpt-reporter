@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tlsrpt_reporter"
-version = "0.6.0rc1"
+version = "0.6.0rc2"
 authors = [
   { name="sys4 AG", email="tlsrpt@sys4.de" },
   { name="Boris Lohner", email="bl@sys4.de"},
