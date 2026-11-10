@@ -1696,7 +1696,6 @@ def remove_datagram_socket(server_address, when):
 def dump_invalid_datagram(path, data):
     """
     Save an invalid datagram for debugging, if dump_path_for_invalid_datagram is configured.
-    Failing to save it must not stop the daemon.
     :param path: the configured dump file name, empty to not save anything
     :param data: the datagram as received
     """
