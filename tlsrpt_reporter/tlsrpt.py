@@ -142,7 +142,7 @@ options_collectd = {
                                     "help": "Retry commit after that many datagrams more were received"},
     "pidfilename": {"type": str, "default": "", "help": "PID file name for collectd"},
     "logfilename": {"type": str, "default": "", "help": "Log file name for collectd"},
-    "log_level": {"type": str, "default": "warn", "help": "Choose log level: debug, info, warning, error, critical"},
+    "log_level": {"type": str, "default": "warning", "help": "Choose log level: debug, info, warning, error, critical"},
     "daily_rollover_script": {"type": str, "default": "", "help": "Hook script to run after day has changed"},
     "dump_path_for_invalid_datagram": {"type": str, "default": "", "help": "Filename to save an invalid datagram"},
 }
@@ -161,7 +161,7 @@ options_fetcher = {
                 "help": "Storage backend, multiple backends separated by comma. "
                         "Note: only the first storage will be used to fetch data from!"},
     "logfilename": {"type": str, "default": "", "help": "Log file name for fetcher"},
-    "log_level": {"type": str, "default": "warn", "help": "Choose log level: debug, info, warning, error, critical"},
+    "log_level": {"type": str, "default": "warning", "help": "Choose log level: debug, info, warning, error, critical"},
 }
 
 
@@ -213,7 +213,7 @@ ConfigReportd = collections.namedtuple("ConfigReportd",
 options_reportd = {
     "pidfilename": {"type": str, "default": "", "help": "PID file name for reportd"},
     "logfilename": {"type": str, "default": "", "help": "Log file name for reportd"},
-    "log_level": {"type": str, "default": "warn", "help": "Log level"},
+    "log_level": {"type": str, "default": "warning", "help": "Log level"},
     "debug_db": {"type": int, "default": 0, "help": "Enable database debugging"},
     "keep_days": {"type": int, "default": 10, "help": "Days to keep old data"},
     "debug_send_mail_dest": {"type": str, "default": "", "help": "Send all mail reports to this addres instead"},
