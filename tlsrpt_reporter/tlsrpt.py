@@ -1693,6 +1693,19 @@ def remove_datagram_socket(server_address, when):
     except OSError as err:
         logger.error("Failed to remove existing socket %s during %s: %s", server_address, when, err)
 
+def dump_invalid_datagram(path, data):
+    """
+    Save an invalid datagram for debugging, if dump_path_for_invalid_datagram is configured.
+    :param path: the configured dump file name, empty to not save anything
+    :param data: the datagram as received
+    """
+    if path is None or path == "":
+        return
+    try:
+        Path(path).write_bytes(data)
+    except OSError as err:
+        logger.error("Could not save invalid datagram to %s: %s", path, err)
+
 def tlsrpt_collectd_daemon(config: ConfigCollectd):
     """
     Daemon function for collectd to be run after configuration was setup
@@ -1801,6 +1814,9 @@ def tlsrpt_collectd_daemon(config: ConfigCollectd):
                             collectd.add_datagram(j)
                         except KeyError as err:
                             logger.error("KeyError %s during processing datagram: %s", str(err), json.dumps(j))
+                        except TypeError as err:
+                            logger.error("TypeError %s during processing datagram: %s", str(err),
+                                         json.dumps(j))
             if had_data == 0:
                 for collectd in collectds:
                     collectd.socket_timeout()
@@ -1812,10 +1828,10 @@ def tlsrpt_collectd_daemon(config: ConfigCollectd):
             raise
         except UnicodeDecodeError as err:
             logger.error("Malformed utf8 data received: %s", str(err))
-            Path(config.dump_path_for_invalid_datagram).write_bytes(alldata)
+            dump_invalid_datagram(config.dump_path_for_invalid_datagram, alldata)
         except json.decoder.JSONDecodeError as err:
             logger.error("JSON decode error: %s", str(err))
-            Path(config.dump_path_for_invalid_datagram).write_text(alldata.decode("utf-8"), encoding="utf-8")
+            dump_invalid_datagram(config.dump_path_for_invalid_datagram, alldata)
         except sqlite3.OperationalError as err:
             logger.error("Database error: %s", str(err))
 
